@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#999',
     marginBottom: 8,
     textTransform: 'uppercase',

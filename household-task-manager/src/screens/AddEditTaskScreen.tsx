@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
   },
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
   },
   unitButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#666',
   },
   unitButtonTextActive: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   exampleTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#666',
     marginBottom: 8,
   },

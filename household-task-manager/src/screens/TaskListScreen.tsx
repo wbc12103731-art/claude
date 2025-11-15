@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#666',
   },
   filterTextActive: {

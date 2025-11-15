@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 14,
     color: '#333',
-    fontWeight: '500',
+    fontWeight: 'normal',
   },
   overdueDate: {
     color: '#ff6b6b',
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
 });
