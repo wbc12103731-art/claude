@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     padding: 16,
-    gap: 12,
     backgroundColor: '#fff',
   },
   filterButton: {
@@ -196,6 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
+    marginHorizontal: 6,
   },
   filterButtonActive: {
     backgroundColor: '#4a90e2',

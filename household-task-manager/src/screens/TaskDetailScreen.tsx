@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     padding: 16,
-    gap: 12,
   },
   completeButton: {
     flex: 2,
@@ -168,6 +167,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginRight: 12,
   },
   completeButtonText: {
     color: '#fff',

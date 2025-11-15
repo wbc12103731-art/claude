@@ -237,7 +237,6 @@ const styles = StyleSheet.create({
   intervalContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
   },
   intervalInput: {
     backgroundColor: '#fff',
@@ -249,10 +248,11 @@ const styles = StyleSheet.create({
     color: '#333',
     width: 80,
     textAlign: 'center',
+    marginRight: 12,
   },
   unitSelector: {
     flexDirection: 'row',
-    gap: 8,
+    marginRight: 12,
   },
   unitButton: {
     paddingVertical: 8,
@@ -261,6 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     borderWidth: 1,
     borderColor: '#ddd',
+    marginRight: 8,
   },
   unitButtonActive: {
     backgroundColor: '#4a90e2',
@@ -298,7 +299,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     padding: 16,
-    gap: 12,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
+    marginRight: 12,
   },
   cancelButtonText: {
     fontSize: 18,
