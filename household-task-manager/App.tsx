@@ -142,10 +142,10 @@ export default function App() {
             全タスク: {tasks.length}件 / 期限切れ: {overdueTasks.length}件
           </Text>
           <TouchableOpacity
-            style={[styles.filterButton, showOnlyOverdue && styles.filterButtonActive]}
+            style={[styles.filterButton, showOnlyOverdue ? styles.filterButtonActive : null]}
             onPress={() => setShowOnlyOverdue(!showOnlyOverdue)}
           >
-            <Text style={[styles.filterButtonText, showOnlyOverdue && styles.filterButtonTextActive]}>
+            <Text style={[styles.filterButtonText, showOnlyOverdue ? styles.filterButtonTextActive : null]}>
               {showOnlyOverdue ? '全て表示' : '期限切れのみ'}
             </Text>
           </TouchableOpacity>
@@ -162,7 +162,7 @@ export default function App() {
             return (
             <TouchableOpacity
               key={task.id}
-              style={[styles.taskItem, taskIsOverdue && styles.taskItemOverdue]}
+              style={[styles.taskItem, taskIsOverdue ? styles.taskItemOverdue : null]}
               onPress={() => {
                 setSelectedTask(task);
                 setScreen('detail');
@@ -221,9 +221,9 @@ export default function App() {
           />
 
           <TouchableOpacity
-            style={[styles.button, !newTaskName && styles.buttonDisabled]}
+            style={[styles.button, !newTaskName ? styles.buttonDisabled : null]}
             onPress={addTask}
-            disabled={!newTaskName}
+            disabled={newTaskName.length === 0}
           >
             <Text style={styles.buttonText}>追加</Text>
           </TouchableOpacity>
