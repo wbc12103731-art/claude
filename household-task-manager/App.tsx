@@ -1,20 +1,52 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function App() {
-  const [count, setCount] = React.useState(0);
+type RootStackParamList = {
+  Home: undefined;
+  Detail: undefined;
+};
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+function HomeScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>家事タスク管理アプリ</Text>
-      <Text style={styles.subtitle}>テスト表示</Text>
+      <Text style={styles.subtitle}>ナビゲーションテスト</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => setCount(count + 1)}
+        onPress={() => navigation.navigate('Detail')}
       >
-        <Text style={styles.buttonText}>カウント: {count}</Text>
+        <Text style={styles.buttonText}>詳細画面へ</Text>
       </TouchableOpacity>
     </View>
+  );
+}
+
+function DetailScreen({ navigation }: any) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>詳細画面</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.buttonText}>← 戻る</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
