@@ -53,84 +53,139 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
 
   const handleDeleteHistory = async (historyId: string) => {
     console.log('handleDeleteHistory called with historyId:', historyId);
-    Alert.alert(
-      '削除確認',
-      'この履歴を削除してもよろしいですか？',
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '削除',
-          style: 'destructive',
-          onPress: async () => {
-            console.log('Delete history button pressed');
-            try {
-              await HistoryStorage.deleteHistory(historyId);
-              await loadHistory();
-              Alert.alert('成功', '履歴を削除しました');
-            } catch (error) {
-              console.error('Delete history error:', error);
-              Alert.alert('エラー', '履歴の削除に失敗しました');
-            }
+
+    if (Platform.OS === 'web') {
+      // Web版ではwindow.confirmを使用
+      const confirmed = window.confirm('この履歴を削除してもよろしいですか？');
+      if (confirmed) {
+        console.log('Delete history confirmed');
+        try {
+          await HistoryStorage.deleteHistory(historyId);
+          await loadHistory();
+          window.alert('履歴を削除しました');
+        } catch (error) {
+          console.error('Delete history error:', error);
+          window.alert('履歴の削除に失敗しました');
+        }
+      }
+    } else {
+      // iOS/AndroidではAlert.alertを使用
+      Alert.alert(
+        '削除確認',
+        'この履歴を削除してもよろしいですか？',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          {
+            text: '削除',
+            style: 'destructive',
+            onPress: async () => {
+              console.log('Delete history button pressed');
+              try {
+                await HistoryStorage.deleteHistory(historyId);
+                await loadHistory();
+                Alert.alert('成功', '履歴を削除しました');
+              } catch (error) {
+                console.error('Delete history error:', error);
+                Alert.alert('エラー', '履歴の削除に失敗しました');
+              }
+            },
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const handleEditHistory = async (item: TaskHistory) => {
     console.log('handleEditHistory called with item:', item.id);
-    if (Platform.OS !== 'ios') {
-      Alert.alert('お知らせ', '日付の編集機能は現在iOSのみで利用可能です');
-      return;
-    }
 
     const currentDate = item.completedAt;
     const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
 
-    Alert.prompt(
-      '日付を編集',
-      '日付を入力してください（形式: YYYY-MM-DD）',
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '更新',
-          onPress: async (inputDate) => {
-            if (!inputDate) return;
+    if (Platform.OS === 'web') {
+      // Web版ではwindow.promptを使用
+      const inputDate = window.prompt('日付を入力してください（形式: YYYY-MM-DD）', dateString);
 
-            const dateParts = inputDate.split('-');
-            if (dateParts.length !== 3) {
-              Alert.alert('エラー', '正しい形式で入力してください（例: 2025-01-15）');
-              return;
-            }
+      if (!inputDate) return;
 
-            const year = parseInt(dateParts[0]);
-            const month = parseInt(dateParts[1]) - 1;
-            const day = parseInt(dateParts[2]);
+      const dateParts = inputDate.split('-');
+      if (dateParts.length !== 3) {
+        window.alert('正しい形式で入力してください（例: 2025-01-15）');
+        return;
+      }
 
-            if (isNaN(year) || isNaN(month) || isNaN(day)) {
-              Alert.alert('エラー', '正しい日付を入力してください');
-              return;
-            }
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1;
+      const day = parseInt(dateParts[2]);
 
-            const newDate = new Date(year, month, day);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) {
+        window.alert('正しい日付を入力してください');
+        return;
+      }
 
-            try {
-              const updatedHistory = {
-                ...item,
-                completedAt: newDate,
-              };
-              await HistoryStorage.updateHistory(updatedHistory);
-              await loadHistory();
-              Alert.alert('成功', '日付を更新しました');
-            } catch (error) {
-              Alert.alert('エラー', '日付の更新に失敗しました');
-            }
+      const newDate = new Date(year, month, day);
+
+      try {
+        const updatedHistory = {
+          ...item,
+          completedAt: newDate,
+        };
+        await HistoryStorage.updateHistory(updatedHistory);
+        await loadHistory();
+        window.alert('日付を更新しました');
+      } catch (error) {
+        console.error('Update history error:', error);
+        window.alert('日付の更新に失敗しました');
+      }
+    } else if (Platform.OS === 'ios') {
+      // iOS版ではAlert.promptを使用
+      Alert.prompt(
+        '日付を編集',
+        '日付を入力してください（形式: YYYY-MM-DD）',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          {
+            text: '更新',
+            onPress: async (inputDate) => {
+              if (!inputDate) return;
+
+              const dateParts = inputDate.split('-');
+              if (dateParts.length !== 3) {
+                Alert.alert('エラー', '正しい形式で入力してください（例: 2025-01-15）');
+                return;
+              }
+
+              const year = parseInt(dateParts[0]);
+              const month = parseInt(dateParts[1]) - 1;
+              const day = parseInt(dateParts[2]);
+
+              if (isNaN(year) || isNaN(month) || isNaN(day)) {
+                Alert.alert('エラー', '正しい日付を入力してください');
+                return;
+              }
+
+              const newDate = new Date(year, month, day);
+
+              try {
+                const updatedHistory = {
+                  ...item,
+                  completedAt: newDate,
+                };
+                await HistoryStorage.updateHistory(updatedHistory);
+                await loadHistory();
+                Alert.alert('成功', '日付を更新しました');
+              } catch (error) {
+                Alert.alert('エラー', '日付の更新に失敗しました');
+              }
+            },
           },
-        },
-      ],
-      'plain-text',
-      dateString
-    );
+        ],
+        'plain-text',
+        dateString
+      );
+    } else {
+      // Android版は未対応
+      Alert.alert('お知らせ', '日付の編集機能は現在Web/iOSのみで利用可能です');
+    }
   };
 
   const nextDueDate = getNextDueDate(task, lastCompletedAt || undefined);

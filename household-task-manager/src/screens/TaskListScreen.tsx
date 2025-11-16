@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { TaskListScreenProps } from '../navigation/types';
@@ -65,28 +66,46 @@ export default function TaskListScreen({ navigation }: TaskListScreenProps) {
 
   const handleDeleteTask = async (taskId: string) => {
     console.log('handleDeleteTask called with taskId:', taskId);
-    Alert.alert(
-      '削除確認',
-      'このタスクを削除してもよろしいですか？',
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '削除',
-          style: 'destructive',
-          onPress: async () => {
-            console.log('Delete button pressed');
-            try {
-              await TaskStorage.deleteTask(taskId);
-              await loadTasks();
-              Alert.alert('成功', 'タスクを削除しました');
-            } catch (error) {
-              console.error('Delete error:', error);
-              Alert.alert('エラー', 'タスクの削除に失敗しました');
-            }
+
+    if (Platform.OS === 'web') {
+      // Web版ではwindow.confirmを使用
+      const confirmed = window.confirm('このタスクを削除してもよろしいですか？');
+      if (confirmed) {
+        console.log('Delete confirmed');
+        try {
+          await TaskStorage.deleteTask(taskId);
+          await loadTasks();
+          window.alert('タスクを削除しました');
+        } catch (error) {
+          console.error('Delete error:', error);
+          window.alert('タスクの削除に失敗しました');
+        }
+      }
+    } else {
+      // iOS/AndroidではAlert.alertを使用
+      Alert.alert(
+        '削除確認',
+        'このタスクを削除してもよろしいですか？',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          {
+            text: '削除',
+            style: 'destructive',
+            onPress: async () => {
+              console.log('Delete button pressed');
+              try {
+                await TaskStorage.deleteTask(taskId);
+                await loadTasks();
+                Alert.alert('成功', 'タスクを削除しました');
+              } catch (error) {
+                console.error('Delete error:', error);
+                Alert.alert('エラー', 'タスクの削除に失敗しました');
+              }
+            },
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const filteredTasks = showOverdueOnly
