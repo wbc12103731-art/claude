@@ -142,33 +142,33 @@ export default function App() {
             全タスク: {tasks.length}件 / 期限切れ: {overdueTasks.length}件
           </Text>
           <TouchableOpacity
-            style={[styles.filterButton, showOnlyOverdue ? styles.filterButtonActive : null]}
+            style={showOnlyOverdue ? styles.filterButtonActive : styles.filterButton}
             onPress={() => setShowOnlyOverdue(!showOnlyOverdue)}
           >
-            <Text style={[styles.filterButtonText, showOnlyOverdue ? styles.filterButtonTextActive : null]}>
+            <Text style={showOnlyOverdue ? styles.filterButtonTextActive : styles.filterButtonText}>
               {showOnlyOverdue ? '全て表示' : '期限切れのみ'}
             </Text>
           </TouchableOpacity>
         </View>
 
         <ScrollView style={styles.taskList}>
-          {displayTasks.length === 0 && (
+          {displayTasks.length === 0 ? (
             <Text style={styles.emptyText}>
               {showOnlyOverdue ? '期限切れのタスクはありません' : 'タスクを追加してください'}
             </Text>
-          )}
+          ) : null}
           {displayTasks.map(task => {
             const taskIsOverdue = isOverdue(task);
             return (
             <TouchableOpacity
               key={task.id}
-              style={[styles.taskItem, taskIsOverdue ? styles.taskItemOverdue : null]}
+              style={taskIsOverdue ? styles.taskItemOverdue : styles.taskItem}
               onPress={() => {
                 setSelectedTask(task);
                 setScreen('detail');
               }}
             >
-              <View>
+              <View style={styles.taskContent}>
                 <Text style={styles.taskName}>{task.name}</Text>
                 <Text style={styles.taskInfo}>
                   {taskIsOverdue ? `${getDaysOverdue(task)}日超過` : '期限内'} (実施間隔: {task.intervalDays}日)
@@ -216,12 +216,12 @@ export default function App() {
             style={styles.input}
             value={newTaskDays}
             onChangeText={setNewTaskDays}
-            keyboardType="numeric"
+            keyboardType="number-pad"
             placeholder="7"
           />
 
           <TouchableOpacity
-            style={[styles.button, !newTaskName ? styles.buttonDisabled : null]}
+            style={newTaskName.length > 0 ? styles.button : styles.buttonDisabled}
             onPress={addTask}
             disabled={newTaskName.length === 0}
           >
@@ -280,62 +280,84 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#4a90e2',
-    padding: 20,
     paddingTop: 40,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
     color: '#fff',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: '#fff',
   },
   filterContainer: {
     backgroundColor: '#fff',
-    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
   },
   filterButton: {
     backgroundColor: '#e0e0e0',
-    padding: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
     paddingLeft: 12,
     paddingRight: 12,
     borderRadius: 5,
   },
   filterButtonActive: {
     backgroundColor: '#4a90e2',
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: 5,
   },
   filterButtonText: {
     color: '#666',
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
     fontSize: 14,
   },
   filterButtonTextActive: {
     color: '#fff',
+    fontWeight: '700' as const,
+    fontSize: 14,
   },
   emptyText: {
-    textAlign: 'center',
-    padding: 40,
+    textAlign: 'center' as const,
+    paddingTop: 40,
+    paddingBottom: 40,
+    paddingLeft: 40,
+    paddingRight: 40,
     fontSize: 16,
     color: '#999',
   },
   addButton: {
     backgroundColor: '#fff',
-    padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: 'center' as const,
   },
   addButtonText: {
     color: '#4a90e2',
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
   },
   backButton: {
     color: '#fff',
@@ -347,20 +369,34 @@ const styles = StyleSheet.create({
   },
   taskItem: {
     backgroundColor: '#fff',
-    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     marginBottom: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
   },
   taskItemOverdue: {
     backgroundColor: '#fff5f5',
     borderLeftWidth: 4,
     borderLeftColor: '#f44336',
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 11,
+    paddingRight: 15,
+    marginBottom: 1,
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
+  },
+  taskContent: {
+    flex: 1,
   },
   taskName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
     marginBottom: 5,
   },
   taskInfo: {
@@ -369,15 +405,21 @@ const styles = StyleSheet.create({
   },
   completeButton: {
     backgroundColor: '#4CAF50',
-    padding: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     borderRadius: 5,
   },
   completeButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
   },
   form: {
-    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   label: {
     fontSize: 16,
@@ -386,7 +428,10 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#fff',
-    padding: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -394,21 +439,34 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#4a90e2',
-    padding: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: 'center' as const,
     marginTop: 20,
   },
   buttonDisabled: {
     backgroundColor: '#ccc',
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 5,
+    alignItems: 'center' as const,
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
   },
   detail: {
-    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   detailLabel: {
     fontSize: 16,
@@ -416,25 +474,31 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: '#f44336',
-    padding: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: 'center' as const,
     marginTop: 20,
     marginBottom: 20,
   },
   deleteButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
   },
   historyTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700' as const,
     marginTop: 20,
     marginBottom: 10,
   },
   historyItem: {
     backgroundColor: '#fff',
-    padding: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
     marginBottom: 5,
     borderRadius: 5,
   },
