@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  FlatList,
+  Platform,
 } from 'react-native';
 import { TaskDetailScreenProps } from '../navigation/types';
 import { TaskHistory } from '../types';
@@ -49,6 +49,84 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
 
   const handleEdit = () => {
     navigation.navigate('AddEditTask', { task });
+  };
+
+  const handleDeleteHistory = async (historyId: string) => {
+    Alert.alert(
+      '削除確認',
+      'この履歴を削除してもよろしいですか？',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '削除',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await HistoryStorage.deleteHistory(historyId);
+              await loadHistory();
+              Alert.alert('成功', '履歴を削除しました');
+            } catch (error) {
+              Alert.alert('エラー', '履歴の削除に失敗しました');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleEditHistory = async (item: TaskHistory) => {
+    if (Platform.OS !== 'ios') {
+      Alert.alert('お知らせ', '日付の編集機能は現在iOSのみで利用可能です');
+      return;
+    }
+
+    const currentDate = item.completedAt;
+    const dateString = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+
+    Alert.prompt(
+      '日付を編集',
+      '日付を入力してください（形式: YYYY-MM-DD）',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '更新',
+          onPress: async (inputDate) => {
+            if (!inputDate) return;
+
+            const dateParts = inputDate.split('-');
+            if (dateParts.length !== 3) {
+              Alert.alert('エラー', '正しい形式で入力してください（例: 2025-01-15）');
+              return;
+            }
+
+            const year = parseInt(dateParts[0]);
+            const month = parseInt(dateParts[1]) - 1;
+            const day = parseInt(dateParts[2]);
+
+            if (isNaN(year) || isNaN(month) || isNaN(day)) {
+              Alert.alert('エラー', '正しい日付を入力してください');
+              return;
+            }
+
+            const newDate = new Date(year, month, day);
+
+            try {
+              const updatedHistory = {
+                ...item,
+                completedAt: newDate,
+              };
+              await HistoryStorage.updateHistory(updatedHistory);
+              await loadHistory();
+              Alert.alert('成功', '日付を更新しました');
+            } catch (error) {
+              Alert.alert('エラー', '日付の更新に失敗しました');
+            }
+          },
+        },
+      ],
+      'plain-text',
+      dateString
+    );
   };
 
   const nextDueDate = getNextDueDate(task, lastCompletedAt || undefined);
@@ -104,9 +182,21 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
             {history.map((item, index) => (
               <View key={item.id} style={styles.historyItem}>
                 <Text style={styles.historyNumber}>{index + 1}.</Text>
-                <Text style={styles.historyDate}>
-                  {formatDate(item.completedAt)}
-                </Text>
+                <TouchableOpacity
+                  style={styles.historyDateContainer}
+                  onPress={() => handleEditHistory(item)}
+                >
+                  <Text style={styles.historyDate}>
+                    {formatDate(item.completedAt)}
+                  </Text>
+                  <Text style={styles.editIcon}>✏️</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.deleteHistoryButton}
+                  onPress={() => handleDeleteHistory(item.id)}
+                >
+                  <Text style={styles.deleteHistoryText}>削除</Text>
+                </TouchableOpacity>
               </View>
             ))}
           </View>
@@ -215,9 +305,10 @@ const styles = StyleSheet.create({
   },
   historyItem: {
     flexDirection: 'row',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    alignItems: 'center',
   },
   historyNumber: {
     fontSize: 16,
@@ -225,8 +316,29 @@ const styles = StyleSheet.create({
     marginRight: 8,
     width: 30,
   },
+  historyDateContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
   historyDate: {
     fontSize: 16,
     color: '#333',
+    marginRight: 8,
+  },
+  editIcon: {
+    fontSize: 14,
+  },
+  deleteHistoryButton: {
+    backgroundColor: '#ff6b6b',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  deleteHistoryText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

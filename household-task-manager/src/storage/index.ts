@@ -112,4 +112,21 @@ export const HistoryStorage = {
     const taskHistory = await this.getTaskHistory(taskId);
     return taskHistory.length > 0 ? taskHistory[0].completedAt : null;
   },
+
+  // 履歴を削除
+  async deleteHistory(historyId: string): Promise<void> {
+    const allHistory = await this.getHistory();
+    const filtered = allHistory.filter(h => h.id !== historyId);
+    await this.saveHistory(filtered);
+  },
+
+  // 履歴を更新
+  async updateHistory(updatedHistory: TaskHistory): Promise<void> {
+    const allHistory = await this.getHistory();
+    const index = allHistory.findIndex(h => h.id === updatedHistory.id);
+    if (index !== -1) {
+      allHistory[index] = updatedHistory;
+      await this.saveHistory(allHistory);
+    }
+  },
 };
