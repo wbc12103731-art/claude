@@ -1,7 +1,7 @@
 [build]
   base = "household-task-manager"
   command = "npm run build"
-  publish = "household-task-manager/web-build"
+  publish = "web-build"
 
 [[redirects]]
   from = "/*"
