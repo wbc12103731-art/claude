@@ -31,6 +31,7 @@ export default function App() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskDays, setNewTaskDays] = useState('7');
+  const [showOnlyOverdue, setShowOnlyOverdue] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -114,6 +115,7 @@ export default function App() {
   };
 
   const overdueTasks = tasks.filter(isOverdue);
+  const displayTasks = showOnlyOverdue ? overdueTasks : tasks;
 
   // タスクリスト画面
   if (screen === 'list') {
@@ -126,13 +128,32 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.subtitle}>期限切れタスク: {overdueTasks.length}件</Text>
+        <View style={styles.filterContainer}>
+          <Text style={styles.subtitle}>
+            全タスク: {tasks.length}件 / 期限切れ: {overdueTasks.length}件
+          </Text>
+          <TouchableOpacity
+            style={[styles.filterButton, showOnlyOverdue && styles.filterButtonActive]}
+            onPress={() => setShowOnlyOverdue(!showOnlyOverdue)}
+          >
+            <Text style={[styles.filterButtonText, showOnlyOverdue && styles.filterButtonTextActive]}>
+              {showOnlyOverdue ? '全て表示' : '期限切れのみ'}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         <ScrollView style={styles.taskList}>
-          {overdueTasks.map(task => (
+          {displayTasks.length === 0 && (
+            <Text style={styles.emptyText}>
+              {showOnlyOverdue ? '期限切れのタスクはありません' : 'タスクを追加してください'}
+            </Text>
+          )}
+          {displayTasks.map(task => {
+            const taskIsOverdue = isOverdue(task);
+            return (
             <TouchableOpacity
               key={task.id}
-              style={styles.taskItem}
+              style={[styles.taskItem, taskIsOverdue && styles.taskItemOverdue]}
               onPress={() => {
                 setSelectedTask(task);
                 setScreen('detail');
@@ -141,7 +162,7 @@ export default function App() {
               <View>
                 <Text style={styles.taskName}>{task.name}</Text>
                 <Text style={styles.taskInfo}>
-                  {getDaysOverdue(task)}日超過 (実施間隔: {task.intervalDays}日)
+                  {taskIsOverdue ? `${getDaysOverdue(task)}日超過` : '期限内'} (実施間隔: {task.intervalDays}日)
                 </Text>
               </View>
               <TouchableOpacity
@@ -154,7 +175,8 @@ export default function App() {
                 <Text style={styles.completeButtonText}>完了</Text>
               </TouchableOpacity>
             </TouchableOpacity>
-          ))}
+            );
+          })}
         </ScrollView>
       </View>
     );
@@ -262,8 +284,39 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 15,
     backgroundColor: '#fff',
+  },
+  filterContainer: {
+    backgroundColor: '#fff',
+    padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filterButton: {
+    backgroundColor: '#e0e0e0',
+    padding: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderRadius: 5,
+  },
+  filterButtonActive: {
+    backgroundColor: '#4a90e2',
+  },
+  filterButtonText: {
+    color: '#666',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  filterButtonTextActive: {
+    color: '#fff',
+  },
+  emptyText: {
+    textAlign: 'center',
+    padding: 40,
+    fontSize: 16,
+    color: '#999',
   },
   addButton: {
     backgroundColor: '#fff',
@@ -290,6 +343,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  taskItemOverdue: {
+    backgroundColor: '#fff5f5',
+    borderLeftWidth: 4,
+    borderLeftColor: '#f44336',
   },
   taskName: {
     fontSize: 18,
