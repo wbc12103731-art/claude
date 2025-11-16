@@ -5,30 +5,18 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build": "expo export:web"
+    "ios": "expo start --ios"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "@react-navigation/native": "^7.1.20",
-    "@react-navigation/native-stack": "^7.6.3",
     "expo": "~54.0.23",
-    "expo-notifications": "^0.32.12",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
-    "react-dom": "^19.1.0",
-    "react-native": "0.81.5",
-    "react-native-safe-area-context": "^5.6.2",
-    "react-native-screens": "^4.18.0",
-    "react-native-web": "^0.21.2"
+    "react-native": "0.81.5"
   },
   "devDependencies": {
-    "@expo/webpack-config": "^19.0.1",
     "@types/react": "~19.1.0",
-    "typescript": "~5.9.2",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "typescript": "~5.9.2"
   },
   "private": true
 }

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  Platform,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -80,12 +80,21 @@ export default function App() {
   };
 
   const deleteTask = (taskId: string) => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('このタスクを削除しますか？')) {
-        saveTasks(tasks.filter(t => t.id !== taskId));
-        setScreen('list');
-      }
-    }
+    Alert.alert(
+      '削除確認',
+      'このタスクを削除しますか？',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        {
+          text: '削除',
+          style: 'destructive',
+          onPress: () => {
+            saveTasks(tasks.filter(t => t.id !== taskId));
+            setScreen('list');
+          },
+        },
+      ]
+    );
   };
 
   const completeTask = (taskId: string) => {
