@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    paddingTop: 12,
   },
   intervalContainer: {
     flexDirection: 'row',
