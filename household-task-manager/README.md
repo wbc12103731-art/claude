@@ -14,7 +14,10 @@
 2. **リポジトリをインポート**
    - Vercelダッシュボードで「Add New」→「Project」をクリック
    - GitHubリポジトリを選択してインポート
-   - Root Directory: そのまま（自動検出）
+   - Framework Preset: 「Other」を選択
+   - Build and Output Settings:
+     - Build Command: `npx expo export:web`
+     - Output Directory: `web-build`
    - 「Deploy」をクリック
 
 3. **デプロイ完了**
@@ -29,9 +32,9 @@
 3. 「Add new site」→「Import an existing project」
 4. GitHubリポジトリを選択
 5. Build settings:
-   - Base directory: `household-task-manager`
-   - Build command: `npx expo export -p web`
-   - Publish directory: `household-task-manager/dist`
+   - Base directory: （空欄のまま）
+   - Build command: `npx expo export:web`
+   - Publish directory: `web-build`
 6. 「Deploy site」をクリック
 
 ## アプリの機能

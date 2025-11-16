@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd household-task-manager && npx expo export -p web",
-  "outputDirectory": "household-task-manager/dist",
+  "buildCommand": "npx expo export:web",
+  "outputDirectory": "web-build",
   "framework": null,
-  "installCommand": "cd household-task-manager && npm install"
+  "installCommand": "npm install"
 }
