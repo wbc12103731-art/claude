@@ -64,6 +64,7 @@ export default function TaskListScreen({ navigation }: TaskListScreenProps) {
   };
 
   const handleDeleteTask = async (taskId: string) => {
+    console.log('handleDeleteTask called with taskId:', taskId);
     Alert.alert(
       '削除確認',
       'このタスクを削除してもよろしいですか？',
@@ -73,10 +74,13 @@ export default function TaskListScreen({ navigation }: TaskListScreenProps) {
           text: '削除',
           style: 'destructive',
           onPress: async () => {
+            console.log('Delete button pressed');
             try {
               await TaskStorage.deleteTask(taskId);
               await loadTasks();
+              Alert.alert('成功', 'タスクを削除しました');
             } catch (error) {
+              console.error('Delete error:', error);
               Alert.alert('エラー', 'タスクの削除に失敗しました');
             }
           },

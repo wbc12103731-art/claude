@@ -52,6 +52,7 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
   };
 
   const handleDeleteHistory = async (historyId: string) => {
+    console.log('handleDeleteHistory called with historyId:', historyId);
     Alert.alert(
       '削除確認',
       'この履歴を削除してもよろしいですか？',
@@ -61,11 +62,13 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
           text: '削除',
           style: 'destructive',
           onPress: async () => {
+            console.log('Delete history button pressed');
             try {
               await HistoryStorage.deleteHistory(historyId);
               await loadHistory();
               Alert.alert('成功', '履歴を削除しました');
             } catch (error) {
+              console.error('Delete history error:', error);
               Alert.alert('エラー', '履歴の削除に失敗しました');
             }
           },
@@ -75,6 +78,7 @@ export default function TaskDetailScreen({ navigation, route }: TaskDetailScreen
   };
 
   const handleEditHistory = async (item: TaskHistory) => {
+    console.log('handleEditHistory called with item:', item.id);
     if (Platform.OS !== 'ios') {
       Alert.alert('お知らせ', '日付の編集機能は現在iOSのみで利用可能です');
       return;
