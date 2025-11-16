@@ -21,6 +21,7 @@
       "color": "#4a90e2"
     },
     "plugins": [
+      "expo-dev-client",
       [
         "expo-notifications",
         {
