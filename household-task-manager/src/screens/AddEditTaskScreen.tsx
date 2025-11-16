@@ -80,6 +80,12 @@ export default function AddEditTaskScreen({ navigation, route }: AddEditTaskScre
     >
       <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← 戻る</Text>
+          </TouchableOpacity>
           <Text style={styles.title}>
             {isEditing ? 'タスクを編集' : 'タスクを追加'}
           </Text>
@@ -203,6 +209,14 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  backButton: {
+    marginBottom: 12,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#4a90e2',
+    fontWeight: 'bold',
   },
   title: {
     fontSize: 28,
