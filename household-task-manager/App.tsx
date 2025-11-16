@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './src/navigation/types';
@@ -17,6 +18,11 @@ export default function App() {
   useEffect(() => {
     // 初期化処理
     const initialize = async () => {
+      // Web環境では通知機能はスキップ（expo-notificationsがサポートされていないため）
+      if (Platform.OS === 'web') {
+        return;
+      }
+
       // 通知の権限をリクエスト
       const hasPermission = await requestNotificationPermissions();
 

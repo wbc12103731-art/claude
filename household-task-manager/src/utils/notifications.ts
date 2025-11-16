@@ -4,17 +4,23 @@ import { HouseholdTask } from '../types';
 import { TaskStorage, HistoryStorage } from '../storage';
 import { isTaskOverdue } from './dateUtils';
 
-// 通知の設定
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// 通知の設定（Web環境ではスキップ）
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 // 通知の権限をリクエスト
 export async function requestNotificationPermissions(): Promise<boolean> {
+  if (Platform.OS === 'web') {
+    return false; // Webでは通知をサポートしない
+  }
+
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
 
@@ -28,6 +34,10 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 
 // 期限切れタスクの通知をスケジュール
 export async function scheduleOverdueNotifications() {
+  if (Platform.OS === 'web') {
+    return; // Webでは通知をサポートしない
+  }
+
   try {
     // 既存の通知をキャンセル
     await Notifications.cancelAllScheduledNotificationsAsync();
@@ -57,6 +67,10 @@ export async function scheduleOverdueNotifications() {
 
 // 毎日チェックする通知をスケジュール
 export async function scheduleDailyCheck() {
+  if (Platform.OS === 'web') {
+    return; // Webでは通知をサポートしない
+  }
+
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
 
@@ -79,6 +93,10 @@ export async function scheduleDailyCheck() {
 
 // バッジ数を更新
 export async function updateBadgeCount() {
+  if (Platform.OS === 'web') {
+    return; // Webでは通知をサポートしない
+  }
+
   try {
     const tasks = await TaskStorage.getTasks();
     let overdueCount = 0;
