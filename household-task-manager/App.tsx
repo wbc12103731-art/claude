@@ -1,53 +1,49 @@
-import React, { useEffect } from 'react';
-import { Platform } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RootStackParamList } from './src/navigation/types';
-import TaskListScreen from './src/screens/TaskListScreen';
-import AddEditTaskScreen from './src/screens/AddEditTaskScreen';
-import TaskDetailScreen from './src/screens/TaskDetailScreen';
-import {
-  requestNotificationPermissions,
-  scheduleDailyCheck,
-  updateBadgeCount,
-} from './src/utils/notifications';
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function App() {
-  useEffect(() => {
-    // 初期化処理
-    const initialize = async () => {
-      // Web環境では通知機能はスキップ（expo-notificationsがサポートされていないため）
-      if (Platform.OS === 'web') {
-        return;
-      }
-
-      // 通知の権限をリクエスト
-      const hasPermission = await requestNotificationPermissions();
-
-      if (hasPermission) {
-        // 毎日のチェック通知をスケジュール
-        await scheduleDailyCheck();
-        // バッジ数を更新
-        await updateBadgeCount();
-      }
-    };
-
-    initialize();
-  }, []);
+  const [count, setCount] = React.useState(0);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
+    <View style={styles.container}>
+      <Text style={styles.title}>家事タスク管理アプリ</Text>
+      <Text style={styles.subtitle}>テスト表示</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => setCount(count + 1)}
       >
-        <Stack.Screen name="TaskList" component={TaskListScreen} />
-        <Stack.Screen name="AddEditTask" component={AddEditTaskScreen} />
-        <Stack.Screen name="TaskDetail" component={TaskDetailScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Text style={styles.buttonText}>カウント: {count}</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 40,
+    color: '#666',
+  },
+  button: {
+    backgroundColor: '#4a90e2',
+    padding: 15,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
