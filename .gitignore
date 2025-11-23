@@ -1,0 +1,9 @@
+# HTML source files (user-provided data)
+suumo_source.html
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Output files
+*.xlsx
